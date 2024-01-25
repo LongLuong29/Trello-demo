@@ -1,0 +1,145 @@
+* {
+  margin: 0px !important;
+  box-sizing: border-box !important;
+}
+
+.disvisable {
+    display: none !important;
+}
+
+.container {
+  width: 100vw;
+}
+
+.header,
+.body,
+.footer {
+  margin-top: 15px !important;
+}
+
+/*Header CSS */
+div.col-xs-4 {
+  padding: 0px;
+}
+
+.dropdown-menu {
+  margin-top: 4px !important;
+}
+
+/* Setting CSS */
+.dropdown-menu li {
+  padding: 6px !important;
+  position: relative;
+}
+
+.dropdown-menu li button {
+  width: 100%; /* Thiết lập chiều rộng của nút bằng với chiều rộng của mục danh sách */
+  text-align: left; /* Căn chữ trái để làm cho văn bản nằm ở bên trái */
+  padding: 8px; /* Thêm padding nếu cần thiết */
+  white-space: nowrap; /* Ngăn chặn việc quấn văn bản */
+}
+.dropdown-menu li button.settings-button {
+  border: none;
+  padding: 0;
+}
+
+.dropdown-menu li:hover {
+  background-color: red;
+}
+
+.header h3 {
+  margin: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bolder !important;
+  color: black;
+}
+
+/**********Body CSS**********/
+/* Table */
+.table-list {
+  list-style: none;
+  display: flex;
+  flex-wrap: nowrap !important;
+}
+
+ul.table {
+  list-style: none;
+  padding: 0px;
+  margin-right: 10px !important;
+  border-radius: 4px;
+  background-color: gray !important;
+  /* background-color: rgba(220, 220, 220, 0.3) !important; */
+  /* height: auto !important; */
+  width: 236px !important;
+}
+
+.table:first-child {
+  margin-left: 10px; /* Không có margin cho phần tử cuối cùng */
+}
+
+.table:last-child {
+  margin-right: 0; /* Không có margin cho phần tử cuối cùng */
+}
+
+ul.table .table-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+  background-color: transparent !important;
+  font-size: larger;
+}
+
+ul.table .card {
+  background-color: wheat !important;
+}
+
+ul.table input[type="text"] {
+    background-color: wheat !important;
+    border: none;
+    padding-top: 7px;
+    padding-left: 10px;
+    padding-bottom: 0px;
+    padding-right: 0px;
+    margin: 0px !important;
+}
+
+ul.table .table-title,
+ul.table .card,
+ul.table .add-card,
+ul.table input[type="text"] {
+  border-radius: 4px;
+  padding-top: 7px;
+  padding-left: 10px;
+  list-style: none;
+  margin: 8px 5px !important;
+  width: 226px;
+  height: 33px;
+}
+
+.create-table-input {
+    width: 310px;
+    height: 50px;
+    margin: 8px 4px !important;
+    border-radius: 4px;
+    padding: 4px 8px !important;
+}
+
+.create-table {
+    display: flex !important;
+    height: fit-content;
+}
+
+.create-table-confirm,
+.create-table-close {
+    background-color: transparent!important;
+    border: none;
+    justify-content: center;
+    align-items: center;
+    width: 52px;
+    font-size: larger;
+    font-weight: bolder;
+}
