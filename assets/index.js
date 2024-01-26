@@ -173,15 +173,14 @@
             html += `
             <li>
                 <ul class="table">
-                    <li id="${tableId}" class="table-title disable">${table.name}</li>`
+                    <li id="${table.id}" class="table-title disable">${table.name}</li>`
                     if(myCard){
                         myCard.forEach(function(card){
-                            `<li id="${card.id}" class="card">${card.name}</li>`;
+                            if(card.tableId == table.id){
+                                html += `<li id="${card.id}" class="card">${card.name}</li>`;
+                            }
                         })
                     }
-            html +=        `<li class="card">Card 1</li>
-                    <li class="card">Card 2</li>
-                    <li class="card">Card 3</li>`
             html +=`<li class="disable"><button class="add-card"> Add a card</button></li>
                 </ul>
             </li>`;
