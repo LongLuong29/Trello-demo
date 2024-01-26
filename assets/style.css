@@ -3,6 +3,8 @@
   box-sizing: border-box !important;
 }
 
+
+
 .disvisable {
     display: none !important;
 }
@@ -38,13 +40,21 @@ div.col-xs-4 {
   padding: 8px; /* Thêm padding nếu cần thiết */
   white-space: nowrap; /* Ngăn chặn việc quấn văn bản */
 }
-.dropdown-menu li button.settings-button {
+.dropdown-menu li button.settings-button,
+#project-dropdown-list {
   border: none;
   padding: 0;
 }
 
-.dropdown-menu li:hover {
-  background-color: red;
+#project-dropdown-list li {
+    list-style: none !important;
+    border: none !important;
+    padding: 8px !important;
+    margin: 2px !important;
+}
+
+#project-dropdown-list li:hover {
+    background-color: plum;
 }
 
 .header h3 {

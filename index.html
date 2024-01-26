@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"> 
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,6 +8,8 @@
       href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
     />
     <link rel="stylesheet" href="./assets/style.css" />
+    <!-- <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css"> -->
     <title>Trello Board</title>
   </head>
   <body>
@@ -23,6 +25,10 @@
           </button>
           <ul id="project-dropdown" class="dropdown-menu">
             <li><input id="search-create-project" type="text" placeholder="Search / Create"></li>
+            <li>
+              <ul id="project-dropdown-list">
+              </ul>
+            </li>
           </ul>
         </div>
 
@@ -43,27 +49,20 @@
       </div>
 
       <div class="body">
-        <ul class="table-list">
-        <li><ul class="table">
-            <li class="table-title disable">Table title 1</li>
-            <li class="card">Card 1</li>
-            <li class="card">Card 2</li>
-            <li class="card">Card 3</li>
-            <li class="disable"><button class="add-card"> Add a card</button></li>
-          </ul>
-        </li>
-          <li><ul class="table">
-            <li class="table-title disable">Table title 1</li>
-            <li class="card">Card 1</li>
-            <li class="card">Card 2</li>
-            <li class="card">Card 3</li>
-            <li class="disable"><button class="add-card"> Add a card</button></li>
-          </ul>
-        </li>
-        <li><button type="button" class="add-table btn btn-default" style="margin-top: 8px !important;">
-          <span class="glyphicon glyphicon-plus"></span> Add another list</button>
-        </li>
-        </ul>
+        <!-- <ul id="1" class="table-list">
+          <li>
+            <ul class="table">
+              <li class="table-title disable">Table title 1</li>
+              <li class="card">Card 1</li>
+              <li class="card">Card 2</li>
+              <li class="card">Card 3</li>
+              <li class="disable"><button class="add-card"> Add a card</button></li>
+            </ul>
+          </li>
+          <li><button type="button" class="add-table btn btn-default" style="margin-top: 8px !important;">
+            <span class="glyphicon glyphicon-plus"></span> Add a list</button>
+          </li>
+        </ul> -->
       </div>
 
       <div class="footer"></div>
@@ -73,8 +72,6 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <script src="//code.jquery.com/jquery-1.12.4.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
     <script src="./assets/index.js"></script>
   </body>
 </html>
