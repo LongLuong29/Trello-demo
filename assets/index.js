@@ -1,14 +1,14 @@
 var projectId, tableId, cardId
 
-var myProject = JSON.parse(localStorage.getItem('project'));
-var myTable = JSON.parse(localStorage.getItem('table'));
-var myCard = JSON.parse(localStorage.getItem('card'));
-
+var myCard = [];
+var myTable = [];
+var myProject = [];
 loadData()
 
 
 //create-search-input => show list project
 $(document).on("click", ".search-create-btn", function () {
+    myProject = JSON.parse(localStorage.getItem('project'));
     $("#project-dropdown-list").empty();
     $("#search-create-project").val('');
     var jsonString = localStorage.getItem("project");
@@ -50,6 +50,7 @@ $(document).on("keyup", "input#search-create-project", function () {
 
 //create-search-btn click event => create project
 $(document).on("click", "#create-pj-btn", function () {
+    myProject = JSON.parse(localStorage.getItem('project'));
     var myProjectName = $(this).val();
     var html = '';
     var project = {
@@ -68,7 +69,18 @@ $(document).on("click", "#create-pj-btn", function () {
     //re-render html
     $("#project-dropdown-list").empty();
     myProject.forEach(function (item, index) {
-        html += `<li class = "${item.id}">${item.name}</li>`
+        html += 
+        `<li class = "${item.id}">${item.name}
+            <div id="tableDropdown " class="dropdown">
+                <button class="btn btn-default dropdown-toggle text-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    <span class="glyphicon glyphicon-option-horizontal"></span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
+                    <li><a class="edit-table ${item.id}" href="#">Edit</a></li>
+                    <li><a class="delete-table ${item.id}" href="#">Delete</a></li>
+                </ul>
+            </div>
+        </li>`
     })
     $("#project-dropdown-list").append(html);
 })
@@ -131,26 +143,24 @@ $(document).on("click", ".table-list button.add-table", function () {
 
 //card add-btn click
 $(document).on("click", ".add-card", function () {
-    var html = `<li><input class="card-input" type="text">
-        <button type="button" ng-click="removeRow(newDelivery.transactions, $index)" class="close icon-white delete-card " aria-hidden="true">&times;</button>
-    </li>`;
+    var html = `<li><input class="card-input" type="text"></li>`;
     $(this).before(html);
     $(this).addClass("disvisable");
 })
 
 // add card input - enter keydown
 $(document).on("keydown", "input.card-input", function (e) {
+    myCard = JSON.parse(localStorage.getItem('card'));
     if (e.which === 13) {
         if($(this).val()){
-            var html = `<li class="card">${$(this).val()}</li>`;
             var card = {
                 id: 'id' + Date.now(),
                 name: $(this).val(),
                 tableId: $(this).closest("ul.table").attr("id")
             }
-            if (!myCard) {
-                myCard = []
-            }
+            var html = `<li id ='${card.id}' class="card">${$(this).val()}
+            <button type="button" ng-click="removeRow(newDelivery.transactions, $index)" class="close icon-white delete-card " aria-hidden="true">&times;</button>
+            </li>`;
             myCard.push(card);
             var jsonString = JSON.stringify(myCard);
             localStorage.setItem("card", jsonString);
@@ -164,26 +174,78 @@ $(document).on("keydown", "input.card-input", function (e) {
 
 // project dropdown li click => choose project
 $(document).on("click", "#project-dropdown-list li", function () {
+
     // console.log($(this).attr("id").split("project")[1]);
     var myProjectId = $(this).attr("id").split("project")[1];
     loadData(myProjectId)
 })
 
+
+// delete card
 $(document).on("click", "button.delete-card", function(){
+    myCard = JSON.parse(localStorage.getItem('card'));
     $(this).closest("li").remove();
-    console.log($(this).closest("li").attr("id"));
-    myCard = myCard.filter(function(card){
-        return card.id !== $(this).closest("li").attr("id");
-    })
-    console.log(myCard)
+    var cardIddd = $(this).closest("li").attr("id");
+    console.log(cardIddd);
+
+    removeObjectById(myCard, cardIddd);
+
+    console.log(myCard);
+
+    var jsonString = JSON.stringify(myCard)
+    localStorage.setItem("card", jsonString); 
+    console.log(JSON.parse(localStorage.getItem("card")));
 })
+
+function removeObjectById(array, targetId) {
+    const index = array.findIndex(obj => obj.id === targetId);
+    if (index !== -1) {
+        array.splice(index, 1);
+    }
+    return array;
+}
+
 
 // $("li.card").hover(function(){
 //     console.log($(this).closest("button").removeClass("disvisable"));
 // })
 
+//delete table 
+$(document).on("click", "a.delete-table", function () {
+    myTable = JSON.parse(localStorage.getItem('table'));
+    myCard = JSON.parse(localStorage.getItem('card'));
+
+    $(this).closest("ul.table").remove();
+    var tableIddd =  $(this).closest("ul.table").attr("id");
+        
+    var myNewCard = []
+    myCard.forEach(function(card){
+        if(card.tableId !== tableIddd){
+            myNewCard.push(card);
+        }
+    })
+    removeObjectById(myTable, tableIddd);
+    myCard = myNewCard;
+
+    console.log(myCard);
+    console.log(myTable)
+
+    var jsonString = JSON.stringify(myTable)
+    localStorage.setItem("table", jsonString); 
+})
+
+//edit table
+$(document).on("click", "a.edit-table", function (){
+    myTable = JSON.parse(localStorage.getItem('table'));
+    var tableIddd =  $(this).closest("ul.table").attr("id");
+    console.log(tableIddd);
+})
+
+
 //Load data
 function loadData(projectId = JSON.parse(localStorage.getItem("projectId"))) {
+    myCard = JSON.parse(localStorage.getItem('card'));
+    myTable = JSON.parse(localStorage.getItem('table'));
     localStorage.setItem("projectId", JSON.stringify(projectId));
     $("div.body").empty();
     var html = `<ul id="${projectId}" class="table-list">`;
@@ -196,7 +258,17 @@ function loadData(projectId = JSON.parse(localStorage.getItem("projectId"))) {
             html += `
                         <li>
                         <ul id="${table.id}" class="table">
-                            <li class="table-title disable">${table.name}</li>`
+                            <li class="table-title disable">${table.name}
+                                <div id="tableDropdown " class="dropdown">
+                                    <button class="btn btn-default text-right dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                    <span class="glyphicon glyphicon-option-horizontal"></span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
+                                        <li><a class="edit-table ${table.id}" href="#">Edit</a></li>
+                                        <li><a class="delete-table ${table.id}" href="#">Delete</a></li>
+                                    </ul>
+                                </div>
+                            </li>`
             if (myCard) {
                 myCard.forEach(function (card) {
                     if (card.tableId == table.id) {
@@ -219,23 +291,23 @@ function loadData(projectId = JSON.parse(localStorage.getItem("projectId"))) {
     $("div.body").append(html);
 }
 
-$(document).on("sortable", ".table", {
-    connectWith: ".connectedSortable",
-    placeholder: "ui-state-highlight",
-    items: '>li:not(.disabled)',
-    receive: function (event, ui) {
-        // Xử lý khi phần tử được kéo vào danh sách mới
-        console.log("Phần tử " + ui.item.text() + " đã được kéo vào danh sách mới.");
-    }
-}).disableSelection();
+// $(document).on("sortable", ".table", {
+//     connectWith: ".connectedSortable",
+//     placeholder: "ui-state-highlight",
+//     items: '>li:not(.disabled)',
+//     receive: function (event, ui) {
+//         // Xử lý khi phần tử được kéo vào danh sách mới
+//         console.log("Phần tử " + ui.item.text() + " đã được kéo vào danh sách mới.");
+//     }
+// }).disableSelection();
 
-// Drag and drop
-$(".table").sortable({
-    connectWith: ".connectedSortable",
-    placeholder: "ui-state-highlight",
-    items: '>li:not(.disabled)',
-    receive: function (event, ui) {
-        // Xử lý khi phần tử được kéo vào danh sách mới
-        console.log("Phần tử " + ui.item.text() + " đã được kéo vào danh sách mới.");
-    }
-}).disableSelection();
+// // Drag and drop
+// $(".table").sortable({
+//     connectWith: ".connectedSortable",
+//     placeholder: "ui-state-highlight",
+//     items: '>li:not(.disabled)',
+//     receive: function (event, ui) {
+//         // Xử lý khi phần tử được kéo vào danh sách mới
+//         console.log("Phần tử " + ui.item.text() + " đã được kéo vào danh sách mới.");
+//     }
+// }).disableSelection();
