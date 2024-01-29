@@ -107,6 +107,11 @@ ul.table .card {
   background-color: wheat !important;
 }
 
+button.delete-card {
+  margin-right: 4px !important;
+}
+
+
 ul.table input[type="text"] {
     background-color: wheat !important;
     border: none;
