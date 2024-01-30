@@ -16,7 +16,9 @@ $(document).on("click", ".search-create-btn", function () {
     var html = ``;
     if (jsonString) {
         for (const item of myProject) {
-            html += `<li id="project${item.id}">${item.name}</li>`;
+            html += `<li class="project-item">
+            <span id="project${item.id}" class="project-name">${item.name}</span>
+            <button class="delete-project" type="button"><span class="glyphicon glyphicon-trash"></span></button></li>`;
         }
         $("#project-dropdown-list").append(html);
     }
@@ -183,7 +185,7 @@ $(document).on("keydown", "input.card-input", function (e) {
 })
 
 // project dropdown li click => choose project
-$(document).on("click", "#project-dropdown-list li", function () {
+$(document).on("click", "span.project-name", function () {
 
     // console.log($(this).attr("id").split("project")[1]);
     var myProjectId = $(this).attr("id").split("project")[1];
@@ -269,7 +271,7 @@ function loadData(projectId = JSON.parse(localStorage.getItem("projectId"))) {
             html += `
                         <li>
                         <ul id="${table.id}" class="table sortable">
-                            <li class="table-title disable" >${table.name}
+                            <li class="table-title disable"><div class="table-name" contenteditable="true" >${table.name}</div>
                                 <div id="tableDropdown " class="dropdown">
                                     <button class="btn btn-default text-right dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                     <span class="glyphicon glyphicon-option-horizontal"></span>
@@ -279,7 +281,7 @@ function loadData(projectId = JSON.parse(localStorage.getItem("projectId"))) {
                                         <li><a class="delete-table ${table.id}" href="#">Delete</a></li>
                                     </ul>
                                 </div>
-                            </li>`
+                            </li><li class="disvisable card"></li>`
             if (myCard) {
                 myCard.forEach(function (card) {
                     if (card.tableId == table.id) {
@@ -290,7 +292,8 @@ function loadData(projectId = JSON.parse(localStorage.getItem("projectId"))) {
                     }
                 })
             }
-            html += `<li class="disable"><button class="add-card add-btn-${table.id}"> Add a card</button></li>
+            html += `<li class="disvisable></li>
+            <li class="disable"><button class="add-card add-btn-${table.id}"> Add a card</button></li>
                             </ul>
                             </li>`;
         })
@@ -302,23 +305,39 @@ function loadData(projectId = JSON.parse(localStorage.getItem("projectId"))) {
     $("div.body").append(html);
 }
 
-
+function findObjectInArrayByID(obj_arr, obj_id){
+    return obj_arr.find(obj => obj.id === obj_id)
+}
 
 $(".sortable").sortable({
     connectWith: ".sortable",
     placeholder: "ui-state-highlight",
-    items: '>li:not(.disabled)',
+    items: '>li:not(.disabled):not(:first-child):not(:last-child)',
     active: function(e, ui){
         console.log($(this))
     },
     receive: function (event, ui) {
-        // Xử lý khi phần tử được kéo vào danh sách mới
-        console.log($(this))
-        console.log("Phần tử " + ui.item.attr("id"));
-        console.log("offset" + ui.offset());
-        console.log("position" + ui.position());
-        console.log("originalPosition" + ui.originalPosition());
-        console.log("sender" + ui.sender());
-        console.log("Phần tử " + ui.item.text() + " đã được kéo vào danh sách mới.");
+        var tableReceived = findObjectInArrayByID(myTable, $(this).attr('id'));
+        var sortedIndex = ui.item.index()-1;
+        var sortedCard = findObjectInArrayByID(myCard, ui.item.attr('id'));
+        console.log(tableReceived);
+        console.log(sortedCard);
+        //reassign tableID for card, removed card form old table
+        sortedCard.tableId = $(this).attr('id');
+
+        //push card into new table
+        var jsonString = JSON.stringify(myCard);
+        localStorage.setItem("card", jsonString);
+        console.log(sortedIndex);
+        console.log(sortedCard);
+        console.log(myCard)
+
+    },
+    stop: function (event, ui) {
+
+    },
+    update: function (event, ui){
+
     }
 }).disableSelection();
+

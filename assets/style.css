@@ -158,3 +158,26 @@ ul.table input[type="text"] {
     font-size: larger;
     font-weight: bolder;
 }
+
+.delete-project {
+  background: none;
+  cursor: pointer;
+  width: auto !important;
+}
+
+.project-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin-bottom: 5px;
+}
+
+.project-name {
+  flex: 1;
+}
+
+.delete-project .glyphicon-trash {
+  color: red; /* Màu của icon trash can */
+}
