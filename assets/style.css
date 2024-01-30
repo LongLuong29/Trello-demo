@@ -3,10 +3,8 @@
   box-sizing: border-box !important;
 }
 
-
-
 .disvisable {
-    display: none !important;
+  display: none !important;
 }
 
 .container {
@@ -66,6 +64,13 @@ div.col-xs-4 {
   font-weight: bolder !important;
   color: black;
 }
+
+/* .modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-right: 15px;
+} */
 
 /**********Body CSS**********/
 /* Table */
@@ -181,3 +186,7 @@ ul.table input[type="text"] {
 .delete-project .glyphicon-trash {
   color: red; /* Màu của icon trash can */
 }
+
+
+
+
