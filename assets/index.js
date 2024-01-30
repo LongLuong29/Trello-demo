@@ -105,8 +105,18 @@ $(document).on("click", "button.create-table-confirm", function () {
 
     var table_added_html =
         `<li>
-                    <ul id="${table.id}" class="table">
-                        <li class="table-title disable">${table.name}</li>
+                    <ul id="${table.id}" class="table sortable">
+                        <li class="table-title disable">${table.name}
+                            <div id="tableDropdown " class="dropdown">
+                                <button class="btn btn-default text-right dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                <span class="glyphicon glyphicon-option-horizontal"></span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
+                                    <li><a class="edit-table ${table.id}" href="#">Edit</a></li>
+                                    <li><a class="delete-table ${table.id}" href="#">Delete</a></li>
+                                </ul>
+                            </div>
+                        </li>
                         <li class="disable"><button class="add-card add-btn-${table.id}"> Add a card</button></li>
                     </ul>
                 </li>`;
@@ -197,14 +207,13 @@ $(document).on("click", "button.delete-card", function(){
     console.log(JSON.parse(localStorage.getItem("card")));
 })
 
-function removeObjectById(array, targetId) {
-    const index = array.findIndex(obj => obj.id === targetId);
+function removeObjectById(arrayList, targetId) {
+    const index = arrayList.findIndex(obj => obj.id === targetId);
     if (index !== -1) {
-        array.splice(index, 1);
+        arrayList.splice(index, 1);
     }
-    return array;
+    return arrayList;
 }
-
 
 // $("li.card").hover(function(){
 //     console.log($(this).closest("button").removeClass("disvisable"));
@@ -241,6 +250,8 @@ $(document).on("click", "a.edit-table", function (){
     console.log(tableIddd);
 })
 
+//exception projectID 
+
 
 //Load data
 function loadData(projectId = JSON.parse(localStorage.getItem("projectId"))) {
@@ -257,8 +268,8 @@ function loadData(projectId = JSON.parse(localStorage.getItem("projectId"))) {
         tableList.forEach(function (table) {
             html += `
                         <li>
-                        <ul id="${table.id}" class="table">
-                            <li class="table-title disable">${table.name}
+                        <ul id="${table.id}" class="table sortable">
+                            <li class="table-title disable" >${table.name}
                                 <div id="tableDropdown " class="dropdown">
                                     <button class="btn btn-default text-right dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                     <span class="glyphicon glyphicon-option-horizontal"></span>
@@ -291,23 +302,23 @@ function loadData(projectId = JSON.parse(localStorage.getItem("projectId"))) {
     $("div.body").append(html);
 }
 
-// $(document).on("sortable", ".table", {
-//     connectWith: ".connectedSortable",
-//     placeholder: "ui-state-highlight",
-//     items: '>li:not(.disabled)',
-//     receive: function (event, ui) {
-//         // Xử lý khi phần tử được kéo vào danh sách mới
-//         console.log("Phần tử " + ui.item.text() + " đã được kéo vào danh sách mới.");
-//     }
-// }).disableSelection();
 
-// // Drag and drop
-// $(".table").sortable({
-//     connectWith: ".connectedSortable",
-//     placeholder: "ui-state-highlight",
-//     items: '>li:not(.disabled)',
-//     receive: function (event, ui) {
-//         // Xử lý khi phần tử được kéo vào danh sách mới
-//         console.log("Phần tử " + ui.item.text() + " đã được kéo vào danh sách mới.");
-//     }
-// }).disableSelection();
+
+$(".sortable").sortable({
+    connectWith: ".sortable",
+    placeholder: "ui-state-highlight",
+    items: '>li:not(.disabled)',
+    active: function(e, ui){
+        console.log($(this))
+    },
+    receive: function (event, ui) {
+        // Xử lý khi phần tử được kéo vào danh sách mới
+        console.log($(this))
+        console.log("Phần tử " + ui.item.attr("id"));
+        console.log("offset" + ui.offset());
+        console.log("position" + ui.position());
+        console.log("originalPosition" + ui.originalPosition());
+        console.log("sender" + ui.sender());
+        console.log("Phần tử " + ui.item.text() + " đã được kéo vào danh sách mới.");
+    }
+}).disableSelection();
