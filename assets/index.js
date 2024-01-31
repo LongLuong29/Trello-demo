@@ -13,7 +13,6 @@
                 if (cardListJson) {
                     cardsListInTable = JSON.parse(cardListJson)
                 }
-
                 myTable.forEach(function (table) {
                     if (!cardsListInTable[table.id]) {
                         cardsListInTable[table.id] = [];
@@ -24,10 +23,8 @@
                         });
                     }
                 })
-
                 localStorage.setItem('cardsListInTable', JSON.stringify(cardsListInTable))
             }
-
             loadData()
 
             //create-search-input => show list project
@@ -76,7 +73,6 @@
                         // myCard.forEach(function(card){
                         //     if(card.tableId == table.id){
                         //         myNewCards.push(card);
-
                         //     }
                         // })
                     }
@@ -92,8 +88,6 @@
                 let changedProjectId = JSON.stringify(myProject[0].id)
                 localStorage.setItem('projectId', JSON.stringify(changedProjectId));
                 loadData(changedProjectId);
-
-
             })
 
             //create-search-input => searching
@@ -118,7 +112,6 @@
                     html += `<li class = "no-result">"${$(this).val()}" not found</li>`
                     html += `<li><button id="create-pj-btn" value="${$(this).val()}">Create "${$(this).val()}"</button></li>`
                 }
-                console.log($(this).val())
                 $("#project-dropdown-list").append(html);
             })
 
@@ -273,7 +266,6 @@
 
             // project dropdown li click => choose project
             $(document).on("click", "li.project-item", function () {
-                // console.log($(this).attr("id").split("project")[1]);
                 var myProjectId = $(this).attr("id").split("project")[1];
                 loadData(myProjectId)
             })
@@ -327,18 +319,8 @@
                 removeObjectById(myTable, tableIddd);
                 myCard = myNewCard;
 
-                console.log(myCard);
-                console.log(myTable)
-
                 var jsonString = JSON.stringify(myTable)
                 localStorage.setItem("table", jsonString);
-            })
-
-            //edit table
-            $(document).on("click", "a.edit-table", function () {
-                myTable = JSON.parse(localStorage.getItem('table'));
-                var tableIddd = $(this).closest("ul.table").attr("id");
-                console.log(tableIddd);
             })
 
             //exception projectID 
@@ -474,7 +456,7 @@
                 placeholder: "ui-state-highlight",
                 items: '>li:not(.disabled):not(:first-child):not(:last-child)',
                 active: function (e, ui) {
-                    console.log($(this))
+
                 },
                 receive: function (event, ui) {
 
@@ -486,10 +468,8 @@
                     var fromTableId = event.target.id;
                     var toTableId = ui.item.closest('ul.table').attr('id')
                     var sortedCard = findObjectInArrayByID(myCard, ui.item.attr('id'));
-                    console.log(sortedCard);
 
                     if(fromTableId !== toTableId){
-                        console.log(sortedIndex)
                         var tableReceived = findObjectInArrayByID(myTable, toTableId);
 
                         removeObjectById(cardsListInTable[sortedCard.tableId], sortedCard.id)
