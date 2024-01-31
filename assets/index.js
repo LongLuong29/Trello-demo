@@ -1,4 +1,5 @@
-            var projectId, tableId, cardId
+            var projectId = JSON.parse(localStorage.getItem('projectId'))
+            var tableId, cardId
 
             var myCard = [];
             var myTable = [];
@@ -233,11 +234,10 @@
 
             // add card input - enter keydown
             $(document).on("keydown", "input.card-input", function (e) {
-                myCard = JSON.parse(localStorage.getItem('card'));
+                myCardJson = localStorage.getItem('card')
+                if(myCardJson){myCard = JSON.parse(myCardJson);}
                 cardListJson = localStorage.getItem('cardsListInTable')
-                if (cardListJson) {
-                    cardsListInTable = JSON.parse(cardListJson)
-                }
+                if (cardListJson) {cardsListInTable = JSON.parse(cardListJson)}
                 if (e.which === 13) {
                     if ($(this).val()) {
                         var card = {
@@ -248,11 +248,16 @@
                         var html = `<li id ='${card.id}' class="card">${$(this).val()}
                         <button type="button" ng-click="removeRow(newDelivery.transactions, $index)" class="close icon-white delete-card " aria-hidden="true">&times;</button>
                         </li>`;
+                        if(!cardsListInTable[card.tableId]){
+                            cardsListInTable[card.tableId] = [card];
+                            localStorage.setItem("cardsListInTable", JSON.stringify(cardsListInTable))
+                        }else{
+                            cardsListInTable[card.tableId].push(card);
+                            localStorage.setItem("cardsListInTable", JSON.stringify(cardsListInTable))
+                        }
                         if (!myCard) {
-                            cardsListInTable[$(this).closest("ul.table").attr("id")] = [card];
                             myCard = [card];
                         } else {
-                            cardsListInTable[$(this).closest("ul.table").attr("id")].push(card);
                             myCard.push(card);
                         }
                         var jsonString = JSON.stringify(myCard);
@@ -391,7 +396,7 @@
                                     <li>
                                     <ul id="${table.id}" class="table sortable">
                                         <li class="table-title disable"><div class="table-name">${table.name}</div>
-                                            <div id="tableDropdown " class="dropdown">
+                                            <div class="dropdown">
                                                 <button class="edit-delete-card-btn btn btn-default text-right dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                                 <span class="glyphicon glyphicon-option-horizontal"></span>
                                                 </button>
@@ -425,18 +430,39 @@
                 $("div.body").append(html);
             }
 
+
+            //edit-table-name button click
             $(document).on('click', "li.table-title a.edit-table", function(){
                 var tableName = $(this).closest("li.table-title").find("div.table-name");
                 var btn = $(this).closest("li.table-title").find("button.edit-delete-card-btn")
-                var html = `<input class=edit-table-title type="text" style="width: 216px; padding: 0px; margin: 0px !important;">`
+                var html = `<input class=edit-table-title type="text" style="width: 216px; padding: 0px; margin: 0px !important; place" placeholder="${tableName.val()}">`
 
                 tableName.before(html)
                 tableName.addClass("disvisable")
                 btn.addClass("disvisable")
             } )
 
-            $(document).on("click", "edit-table-title", function() {
-                
+            //edited table name
+            $(document).on("keydown", "input.edit-table-title", function(e) {
+
+                var tableJsonString = localStorage.getItem("table");
+                if(tableJsonString){myTable = JSON.parse(tableJsonString)}
+                if(e.which == 13) {
+                    var thisValue = $(this).val();
+                    var thisTableName = $(this).closest("li.table-title").find("div.table-name")
+                    var btn = $(this).closest("li.table-title").find("button.edit-delete-card-btn")
+                    var thisTable = findObjectInArrayByID(myTable, thisTableName.closest("ul.table").attr("id"))
+
+                    //html handle
+                    thisTableName.text(thisValue)
+                    thisTableName.removeClass("disvisable")
+                    btn.removeClass("disvisable")
+                    $(this).remove()
+
+                    //edit table namethisValue
+                    thisTable.name = thisValue;
+                    localStorage.setItem("table", JSON.stringify(myTable));
+                }
             })
 
             function findObjectInArrayByID(obj_arr, obj_id) {
