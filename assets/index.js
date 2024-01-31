@@ -25,7 +25,8 @@
                 })
                 localStorage.setItem('cardsListInTable', JSON.stringify(cardsListInTable))
             }
-            loadData()
+            loadData();
+            sortCard();
 
             //create-search-input => show list project
             $(document).on("click", ".search-create-btn", function () {
@@ -256,11 +257,13 @@
                         var jsonString = JSON.stringify(myCard);
                         localStorage.setItem("card", jsonString);
                         localStorage.setItem("cardsListInTable", JSON.stringify(cardsListInTable))
-                        $(this).before(html);
+                        $(this).closest(".disable").before(html);
+                        console.log($(this))
+                        console.log($(this).closest("disable"))
                     }
-                    // Xu ly giao dien sau khi nhan enter
-                    $(".add-btn-" + $(this).closest("ul.table").attr("id")).removeClass("disvisable");
-                    $(this).remove();
+                     // Xu ly giao dien sau khi nhan enter
+                     $(".add-btn-" + $(this).closest("ul.table").attr("id")).removeClass("disvisable");
+                     $(this).remove();
                 }
             })
 
@@ -298,10 +301,6 @@
                 return arrayList;
             }
 
-            // $("li.card").hover(function(){
-            //     console.log($(this).closest("button").removeClass("disvisable"));
-            // })
-
             //delete table 
             $(document).on("click", "a.delete-table", function () {
                 myTable = JSON.parse(localStorage.getItem('table'));
@@ -324,7 +323,6 @@
             })
 
             //exception projectID 
-
             function checked() {
                 myProject = JSON.parse(localStorage.getItem('project'));
                 jsonString = localStorage.getItem('projectId');
@@ -398,7 +396,7 @@
                                 }
                             })
                         }
-                        html += `<li class="disvisable></li>
+                        html += `<li class="disvisable"></li>
                         <li class="disable"><button class="add-card add-btn-${table.id}"> Add a card</button></li>
                                         </ul>
                                         </li>`;
@@ -450,6 +448,11 @@
             function findObjectInArrayByID(obj_arr, obj_id) {
                 return obj_arr.find(obj => obj.id === obj_id)
             }
+
+
+
+            function sortCard(){
+
             $(".sortable").sortable({
 
                 connectWith: ".sortable",
@@ -496,3 +499,5 @@
                     }
                 }
             }).disableSelection();
+
+        }
