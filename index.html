@@ -14,7 +14,7 @@
   </head>
   <body>
     <div class="container"> 
-      <div class="header row" style="position: fixed !important; display: flex !important; align-items: center;">
+      <div class="header row"  style="position: fixed !important; display: flex !important; align-items: center;">
         <div class="dropdown col-xs-4">
           <button
             class="search-create-btn btn btn-default dropdown-toggle"
@@ -26,7 +26,7 @@
           <ul id="project-dropdown" class="dropdown-menu">
             <li><input id="search-create-project" type="text" placeholder="Search / Create"></li>
             <li>
-              <ul id="project-dropdown-list">
+              <ul id="project-dropdown-list" style="z-index: 1;">
               </ul>
             </li>
           </ul>
@@ -41,8 +41,8 @@
                 <span class="glyphicon glyphicon-menu-hamburger"></span></button>
                 <ul class="dropdown-menu dropdown-menu-right">
                   <li><button class="settings-button"><span class="glyphicon glyphicon-adjust"></span>  Toogle dark mode</button></li>
-                  <li><button class="settings-button"><span class="glyphicon glyphicon-open"></span>  Import as JSON</button></li>
-                  <li><button class="settings-button"><span class="glyphicon glyphicon-save"></span>  Export as JSON</button></li>
+                  <li><button id="import-json" class="settings-button"><span class="glyphicon glyphicon-open"></span>  Import as JSON</button></li>
+                  <li><button id="export-json" class="settings-button"><input multiple="false" type="file" id="jsonFileInput" accept=".json" style="display: none;"><span class="glyphicon glyphicon-save"></span>  Export as JSON</button></li>
                 </ul>
               </div>
         </div>
@@ -68,7 +68,7 @@
           </div>
       </div>
 
-      <div class="body" style="margin-top: 50px !important;">
+      <div class="body" style="margin-top: 70px !important;">
       
       
       </div>

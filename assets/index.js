@@ -1,9 +1,7 @@
-            var projectId = JSON.parse(localStorage.getItem('projectId'))
+            var projectId;
             var tableId, cardId
 
-            var myCard = [];
-            var myTable = [];
-            var myProject = [];
+            var myCard = [], myTable = [], myProject = [];
             var cardsListInTable = {}
 
             if (localStorage.getItem('table') && localStorage.getItem('card')) {
@@ -37,19 +35,19 @@
                 myProject = JSON.parse(jsonString);
                 var html = ``;
                 if (jsonString) {
-                    if (myProject.length <= 1) {
-                        html += `<li id="project0" class="project-item">
-                        <span class="project-name">${myProject[0].name}</span>
-                        <button class="delete-project" type="button">
-                        <span class="glyphicon glyphicon-trash"></span></button></li>`;
-                    } else {
+                    // if (myProject.length <= 1) {
+                    //     html += `<li id="project0" class="project-item">
+                    //     <span class="project-name">${myProject[0].name}</span>
+                    //     <button class="delete-project" type="button">
+                    //     <span class="glyphicon glyphicon-trash"></span></button></li>`;
+                    // } else {
                         for (const item of myProject) {
-                            html += `<li id="project${item.id}" class="project-item">
+                            html += `<li id="${item.id}" class="project-item">
                             <span class="project-name">${item.name}</span>
                             <button class="delete-project" type="button">
                             <span class="glyphicon glyphicon-trash"></span></button></li>`;
                         }
-                    }
+                    // }
                     $("#project-dropdown-list").append(html);
                 }
             })
@@ -269,10 +267,9 @@
 
             // project dropdown li click => choose project
             $(document).on("click", "li.project-item", function () {
-                var myProjectId = $(this).attr("id").split("project")[1];
+                var myProjectId = $(this).attr("id");
                 loadData(myProjectId)
             })
-
 
             // delete card
             $(document).on("click", "button.delete-card", function () {
@@ -343,7 +340,6 @@
                 loadData(projectId);
             }
 
-
             //Load data
             function loadData(projectId = JSON.parse(localStorage.getItem('projectId'))) {
                 if (!projectId) {
@@ -356,6 +352,7 @@
                     projectId = newProject[0].id
                     alert(projectId)
                     localStorage.setItem('project', JSON.stringify(myProject))
+                    loadData(projectId)
                 }
 
                 cardListJsonString = localStorage.getItem('cardListJsonString')
@@ -403,13 +400,12 @@
                     })
                 }
 
-                html += `<li><button type="button" class="add-table btn btn-default" style="margin-top: 8px !important;">
-                                <span class="glyphicon glyphicon-plus"></span> Add a list</button>
+                html += `<li><button type="button" class="add-table btn btn-default" style="margin-top: 8px !important; ">
+                                 Add a list</button>
                                 </li>
                                 </ul>`;
                 $("div.body").append(html);
             }
-
 
             //edit-table-name button click
             $(document).on('click', "li.table-title a.edit-table", function(){
@@ -445,59 +441,143 @@
                 }
             })
 
+            //export json
+            $(document).on("click", "button#export-json", function(){
+                var table = JSON.parse(localStorage.getItem("table"));
+                var card = JSON.parse(localStorage.getItem("card"));
+                var project = JSON.parse(localStorage.getItem("project"));
+                var cardListInTbl = JSON.parse(localStorage.getItem("cardsListInTable"));
+                projectId = JSON.parse(localStorage.getItem("projectId"));
+
+                var jsonData = {
+                    projectJson: project,
+                    tableJson: table,
+                    cardJson: card,
+                    cardListInTblJson: cardListInTbl,
+                    projectIdJson: projectId
+                }
+
+                // Chuyển đối tượng JSON thành chuỗi JSON
+                var jsonString = JSON.stringify(jsonData, null, 2);
+
+                // Tạo một đối tượng Blob từ chuỗi JSON
+                var blob = new Blob([jsonString], { type: 'application/json' });
+
+                // Tạo một đường dẫn URL từ đối tượng Blob
+                var url = URL.createObjectURL(blob);
+
+                 // Tạo một thẻ <a> để tải xuống JSON
+                 var a = $('<a>', {
+                    href: url,
+                    download: 'exported_data.json'
+                });
+
+                // Thêm thẻ <a> vào body và kích hoạt sự kiện click
+                $('body').append(a);
+                a[0].click();
+
+                // Xóa thẻ <a> sau khi tải xuống
+                a.remove();
+            })
+
+            //import json
+            $(document).on('click', 'button#import-json', function(){
+                $('#jsonFileInput').click();
+            })
+            $('#jsonFileInput').change(function () {
+                var fileInput = this;
+
+                // Kiểm tra xem người dùng đã chọn tệp hay chưa
+                if (fileInput.files.length > 0) {
+                    var file = fileInput.files[0];
+                    var reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        // Lấy nội dung JSON từ tệp đã chọn
+                        var jsonContent = e.target.result;
+
+                        // Chuyển chuỗi JSON thành đối tượng JavaScript
+                        var jsonData = JSON.parse(jsonContent);
+
+                        // Gán dữ liệu vào các đối tượng trong JavaScript
+                        // Ví dụ:
+                        console.log(jsonData);
+                        myCard = jsonData.cardJson
+                        myTable = jsonData.tableJson
+                        myProject = jsonData.projectJson
+                        cardsListInTable = jsonData.cardListInTblJson
+                        projectId = jsonData.projectIdJson
+                        saveItemOnLocalStorage("card", myCard)
+                        saveItemOnLocalStorage("table", myTable)
+                        saveItemOnLocalStorage("project", myProject)
+                        saveItemOnLocalStorage("cardsListInTable", cardsListInTable)
+                        saveItemOnLocalStorage("projectId", projectId)
+                    };
+
+                    // Đọc nội dung của tệp JSON
+                    reader.readAsText(file);
+
+                    loadData(projectId);
+                } else {
+                    alert('Vui lòng chọn một tệp JSON.');
+                }
+            });
+
+            function saveItemOnLocalStorage(nameOnLocal, savedItem){
+                localStorage.setItem(nameOnLocal, JSON.stringify(savedItem));
+            }
+
             function findObjectInArrayByID(obj_arr, obj_id) {
                 return obj_arr.find(obj => obj.id === obj_id)
             }
 
-
-
+            //card sorting
             function sortCard(){
+                $(".sortable").sortable({
 
-            $(".sortable").sortable({
+                    connectWith: ".sortable",
+                    placeholder: "ui-state-highlight",
+                    items: '>li:not(.disabled):not(:first-child):not(:last-child)',
+                    active: function (e, ui) {
 
-                connectWith: ".sortable",
-                placeholder: "ui-state-highlight",
-                items: '>li:not(.disabled):not(:first-child):not(:last-child)',
-                active: function (e, ui) {
+                    },
+                    receive: function (event, ui) {
 
-                },
-                receive: function (event, ui) {
+                    },
+                    stop: function(event, ui) {
+                        var sortedIndex = ui.item.index() - 2;
+                        cardsListInTable = JSON.parse(localStorage.getItem('cardsListInTable'));
 
-                },
-                stop: function(event, ui) {
-                    var sortedIndex = ui.item.index() - 2;
-                    cardsListInTable = JSON.parse(localStorage.getItem('cardsListInTable'));
+                        var fromTableId = event.target.id;
+                        var toTableId = ui.item.closest('ul.table').attr('id')
+                        var sortedCard = findObjectInArrayByID(myCard, ui.item.attr('id'));
 
-                    var fromTableId = event.target.id;
-                    var toTableId = ui.item.closest('ul.table').attr('id')
-                    var sortedCard = findObjectInArrayByID(myCard, ui.item.attr('id'));
+                        if(fromTableId !== toTableId){
+                            var tableReceived = findObjectInArrayByID(myTable, toTableId);
 
-                    if(fromTableId !== toTableId){
-                        var tableReceived = findObjectInArrayByID(myTable, toTableId);
+                            removeObjectById(cardsListInTable[sortedCard.tableId], sortedCard.id)
 
-                        removeObjectById(cardsListInTable[sortedCard.tableId], sortedCard.id)
+                            //reassign tableID for card, removed card form old table
+                            sortedCard.tableId = toTableId;
 
-                        //reassign tableID for card, removed card form old table
-                        sortedCard.tableId = toTableId;
+                            // added card to new table
+                            cardsListInTable[tableReceived.id].splice(sortedIndex, 0, sortedCard);
+                            localStorage.setItem('cardsListInTable', JSON.stringify(cardsListInTable))
 
-                        // added card to new table
-                        cardsListInTable[tableReceived.id].splice(sortedIndex, 0, sortedCard);
-                        localStorage.setItem('cardsListInTable', JSON.stringify(cardsListInTable))
-
-                        //push card into new table
-                        var jsonString = JSON.stringify(myCard);
-                        localStorage.setItem("card", jsonString);
+                            //push card into new table
+                            var jsonString = JSON.stringify(myCard);
+                            localStorage.setItem("card", jsonString);
+                        }
+                        else {
+                            var tableSorted = findObjectInArrayByID(myTable, toTableId);
+                            var movedCardIndex = cardsListInTable[toTableId].findIndex(function (obj) {
+                                return obj.id === ui.item.attr('id');
+                            })
+                            var movedCardItem = cardsListInTable[toTableId].splice(movedCardIndex,1)[0];
+                            cardsListInTable[tableSorted.id].splice(sortedIndex, 0, movedCardItem);
+                            localStorage.setItem('cardsListInTable', JSON.stringify(cardsListInTable))
+                        }
                     }
-                    else {
-                        var tableSorted = findObjectInArrayByID(myTable, toTableId);
-                        var movedCardIndex = cardsListInTable[toTableId].findIndex(function (obj) {
-                            return obj.id === ui.item.attr('id');
-                        })
-                        var movedCardItem = cardsListInTable[toTableId].splice(movedCardIndex,1)[0];
-                        cardsListInTable[tableSorted.id].splice(sortedIndex, 0, movedCardItem);
-                        localStorage.setItem('cardsListInTable', JSON.stringify(cardsListInTable))
-                    }
-                }
-            }).disableSelection();
+                }).disableSelection();
 
-        }
+            }
